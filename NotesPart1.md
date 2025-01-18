@@ -1,6 +1,6 @@
 ### using !
 
-    Here a bullean value is changes when used (!ture == false) and vice versa (!false == true), and you can simple access that using the (!var) sign before the var that contains the bullean value and get the oppiste of that bullean value
+Here a bullean value is changes when used (!ture == false) and vice versa (!false == true), and you can simple access that using the (!var) sign before the var that contains the bullean value and get the oppiste of that bullean value
 
       <button
         className="close"
@@ -30,6 +30,6 @@ To my understanding you can use a fucntion inside the onlcik fuicntion and do st
 
 set the steps with a callback fucntion like this -
 
-const handleNext = () => {
-return step < 3 && setStep((s) => s + 1);
-};
+        const handleNext = () => {
+        return step < 3 && setStep((s) => s + 1);
+        };
