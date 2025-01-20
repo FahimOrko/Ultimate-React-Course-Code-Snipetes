@@ -11,13 +11,6 @@ const Body = () => {
   //   const month = date.getMonth();
   //   const year = date.getFullYear();
 
-  const addStep = () => {
-    updateStep((s) => s + 1);
-  };
-  const minusStep = () => {
-    step > 1 && updateStep((s) => s - 1);
-  };
-
   const addCount = () => {
     updateCount((c) => c + step);
   };
@@ -36,13 +29,16 @@ const Body = () => {
             marginTop: "20px",
           }}
         >
-          <button style={buttonStyle} onClick={minusStep}>
-            -
-          </button>
-          <p style={{ margin: "20px" }}>step : {step}</p>
-          <button style={buttonStyle} onClick={addStep}>
-            +
-          </button>
+          <input
+            type="range"
+            min={1}
+            max={10}
+            value={step}
+            onChange={(e) => {
+              updateStep(Number(e.target.value));
+            }}
+          />
+          <p>Step : {step}</p>
         </div>
         <div
           style={{
@@ -54,7 +50,12 @@ const Body = () => {
           <button style={buttonStyle} onClick={minusCount}>
             -
           </button>
-          <p style={{ margin: "20px" }}>count : {count}</p>
+          <input
+            type="text"
+            placeholder="Enter a number"
+            value={count}
+            onChange={(e) => updateCount(Number(e.target.value))}
+          />
           <button style={buttonStyle} onClick={addCount}>
             +
           </button>
@@ -70,6 +71,22 @@ const Body = () => {
         <h3>
           {count} day form today is {date.toDateString()}
         </h3>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          marginTop: "20px",
+        }}
+      >
+        <button
+          onClick={() => {
+            updateCount(0);
+            updateStep(1);
+          }}
+        >
+          Reset
+        </button>
       </div>
     </>
   );
