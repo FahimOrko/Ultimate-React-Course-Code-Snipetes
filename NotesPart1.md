@@ -1,4 +1,4 @@
-### using !
+### Using !
 
 Here a bullean value is changes when used (!ture == false) and vice versa (!false == true), and you can simple access that using the (!var) sign before the var that contains the bullean value and get the oppiste of that bullean value
 
@@ -68,13 +68,13 @@ the full code looks something like thios -
       <button>Add</button>
     </form>
 
-### prevent def on sumbit in forms
+### Prevent defualt on submit in forms
 
     const onSubmit = (e) => {
       e.preventDefault();
     };
 
-### diff between state and props
+### Diff between state and props
 
 state - internal data, more like memory data
 props - external data, comminucation between parent and child
