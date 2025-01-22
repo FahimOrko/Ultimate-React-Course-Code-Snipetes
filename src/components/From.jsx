@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const From = () => {
+const From = ({ onClick }) => {
   const [description, setDescription] = useState("");
   const [quantity, setQuantity] = useState(1);
 
@@ -11,6 +11,7 @@ const From = () => {
 
     const newItem = { quantity, description, id: Date.now(), packed: false };
     console.log(newItem);
+    onClick(newItem);
     setDescription("");
     setQuantity(1);
   };
