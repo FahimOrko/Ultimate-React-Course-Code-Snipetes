@@ -78,3 +78,25 @@ the full code looks something like thios -
 
 state - internal data, more like memory data
 props - external data, comminucation between parent and child
+
+### Ways to use state
+
+- lift up state to the first parent componnet, if the siblings components aloso need to use the state
+
+### sorting Items
+
+    sortBy === "desc" &&
+      (sorteditems = items
+        .slice()
+        .sort((a, b) => a.description.localeCompare(b.description)));
+
+    sortBy === "packed" &&
+      (sorteditems = items
+        .slice()
+        .sort((a, b) => Number(a.packed) - Number(b.packed)));
+
+### Window alert for confirming somethging
+
+This has a boolean value, if okay is clicked it ture else false
+
+    const confirm = window.confirm("Are you sure you want to clear the list ?");
