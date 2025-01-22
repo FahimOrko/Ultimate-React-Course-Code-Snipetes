@@ -49,24 +49,16 @@ const App = () => {
             Step {step} : {messages[step - 1]}
           </p>
           <div className="buttons">
-            <Button buttonColor={buttonColor} handle={handlePrev}>
-              👈 Previous
-            </Button>
-            <Button buttonColor={buttonColor} handle={handleNext}>
-              Next 👉{" "}
-            </Button>
+            <button style={buttonColor} onClick={() => handlePrev()}>
+              Previous
+            </button>
+            <button style={buttonColor} onClick={handleNext}>
+              Next
+            </button>
           </div>
         </div>
       )}
     </>
-  );
-};
-
-const Button = ({ buttonColor, handle, children }) => {
-  return (
-    <button style={buttonColor} onClick={handle}>
-      {children}
-    </button>
   );
 };
 
