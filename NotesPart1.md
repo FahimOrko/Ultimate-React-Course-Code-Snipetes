@@ -100,3 +100,30 @@ props - external data, comminucation between parent and child
 This has a boolean value, if okay is clicked it ture else false
 
     const confirm = window.confirm("Are you sure you want to clear the list ?");
+
+### Using Children
+
+    <Button buttonColor={buttonColor} handle={handlePrev}>
+      👈 Previous
+    </Button>
+    <Button buttonColor={buttonColor} handle={handleNext}>
+      Next 👉{" "}
+    </Button>
+
+
+    const Button = ({ buttonColor, handle, children }) => {
+      return (
+        <button style={buttonColor} onClick={handle}>
+          {children}
+        </button>
+      );
+    };
+
+### Using select and option
+
+    <select value={tip} onChange={(e) => setTip(Number(e.target.value))}>
+      <option value="5">Tip five precent (5%)</option>
+      <option value="10">Tip five precent (10%)</option>
+      <option value="15">Tip five precent (15%)</option>
+      <option value="20">Tip five precent (20%)</option>
+    </select>
