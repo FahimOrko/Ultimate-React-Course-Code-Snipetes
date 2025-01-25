@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { MovieInList } from "./MovieInList";
 
 export const MovieList = ({ children }) => {
   const [isOpen1, setIsOpen1] = useState(true);
