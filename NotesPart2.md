@@ -24,3 +24,19 @@ This works same way you would handle a prop
 Mainly used in react router
 
       <MovieList element={<MovieInList movies={movies} />} />
+
+### Set prop types so you dont get prop errors
+
+So basically this is simmilar to what TS does, you set the prop type for the props of the componets, here is a expample of how you can do it in JSX
+
+first improt Proptype
+
+    import PropTypes from "prop-types";
+
+    StarRaiting.prototype = {
+      maxRating: PropTypes.number,
+      color: PropTypes.string,
+      size: PropTypes.number,
+      defaultRating: PropTypes.number,
+      masssages: PropTypes.array,
+    };
