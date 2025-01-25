@@ -20,7 +20,7 @@ export default function App() {
   console.log(movies);
   return (
     <>
-      {/* <Navbar>
+      <Navbar>
         <Search />
         <NavbarResults movies={movies} />
       </Navbar>
@@ -32,13 +32,13 @@ export default function App() {
           <WatchedSumamry watched={watched} />
           <WatchedMovieList watched={watched} />
         </Box>
-      </Main> */}
-      <StarRaiting maxRating={5} />
+      </Main>
+      {/* <StarRaiting maxRating={5} />
       <StarRaiting maxRating={5} defaultRating={3} />
       <StarRaiting
         maxRating={5}
         masssages={["Terible", "Bad", "Okay", "Good", "Superb"]}
-      />
+      /> */}
     </>
   );
 }
