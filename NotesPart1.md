@@ -59,7 +59,7 @@ Here’s what happens:
 
 1. A list of numbers from [1, 20] is generated using Array.from.
 2. The .map() function loops over the list.
-3. Basic JavaScript is used to create options for a <select> dropdown.
+3. Basic JavaScript is used to create options for a select dropdown.
 
 ```
    <form className="add-form">
@@ -142,9 +142,9 @@ You can pass children to a reusable button component like this:
     };
 ```
 
-### Using <select> and <option>
+### Using select and option
 
-Example of a <select> dropdown with options:
+Example of a select dropdown with options:
 
 ```
     <select value={tip} onChange={(e) => setTip(Number(e.target.value))}>
