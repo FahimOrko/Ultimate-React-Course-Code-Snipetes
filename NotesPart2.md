@@ -56,3 +56,8 @@ first improt Proptype
 ### React work tree
 
 trigger -> update reat elems -> new virtual dom -> Reconsile diff with curr fiber tree -> Update fiber tree -> List of dom updates -> Commit pahse -> Update dom -> Update UI on screen
+
+### Using key in react instances
+
+1. You should always use unique keys if you dont want to update an elemeent on rerender when the elem is the same as prev one. Mainoly for time compelxity, Thats why there should be a unzie key always when you llop ovwer a list and each item should have uniue key
+2. Howver on the other hand you if a componet instance is the same and eveyhtingis same, but lets says props are diffrent and you need to update the state, you can send in a diffrent key and when react renders the page it will reset the state.

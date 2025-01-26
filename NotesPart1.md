@@ -1,90 +1,106 @@
 ### Using !
 
-Here a bullean value is changes when used (!ture == false) and vice versa (!false == true), and you can simple access that using the (!var) sign before the var that contains the bullean value and get the oppiste of that bullean value
+A boolean value can be toggled using `!`. For example, `!true` equals `false` and vice versa (`!false` equals `true`). You can apply this by placing `!` before a variable containing a boolean value to get its opposite:
 
+    ```
     <button
-    className="close"
-    onClick={() => {
-      // console.log("-------------------------------------");
-      // console.log("intaitally", isOpen);
-      // console.log("after change", !isOpen);
-      // console.log("-------------------------------------");
-      return setIsOpen(!isOpen);
-    }} >
-    &times;
+      className="close"
+        onClick={() => {
+          // console.log("-------------------------------------");
+          // console.log("intaitally", isOpen);
+          // console.log("after change", !isOpen);
+          // console.log("-------------------------------------");
+          return setIsOpen(!isOpen);
+        }} >
+      &times;
     </button>
+    ```
 
-### Using fuction indside of onClick fucntion
+### Using a Function Inside onClick
 
-To my understanding you can use a fucntion inside the onlcik fuicntion and do stuff isnde it as long as it returns a values, and hwne you have a fuction outisde the html code just simply write the fuction name and not the brackets to use that fuction, because react expexts it that way
+You can use a function inside the onClick handler to execute logic as long as it returns a value. When using a function defined outside the JSX code, simply write its name without parentheses to reference it, as React expects it that way.
 
+    ```
     <button style={buttonColor} onClick={() => handlePrev()}>
       Previous
     </button>
     <button style={buttonColor} onClick={handleNext}>
       Next
     </button>
+    ```
 
-### best practice for using states
+### Best Practices for Using States
 
-set the steps with a callback fucntion like this -
+Use a callback function when updating states. For example:
 
+    ```
     const handleNext = () => {
       return step < 3 && setStep((s) => s + 1);
     };
+    ```
 
-### Get emojis section
+### Get Emojis Section
 
 button - win + .
 
-### Array form method
+### Array.from Method
 
-this is mainly used to genarate stuff like rows of number
+This method is helpful for generating arrays, such as rows of numbers.
 
+    ```
     {Array.from({ length: 20 }, (\_, i) => i + 1).map((num) => (
       <option value={num} key={num}>
         {num}
       </option>
     ))}
+    ```
 
-Here in the code before the map fuction with the array from a list of numbers from [1,20] is created.
-Then we chain the map fuction to it to loop of over the list.
-And then just basic javascript inside a from to create options
-the full code looks something like thios -
+Here’s what happens:
 
-    <form className="add-form">
-      <h3 className="font-bold text-gray-200">
-        Don't forget to bring your stuff now, So what do you think you need for
-        this trip?
-      </h3>
-      <select>
-        {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
-          <option value={num} key={num}>
-            {num}
-          </option>
-        ))}
-      </select>
-      <input type="text" placeholder="Name of the item...." />
-      <button>Add</button>
-    </form>
+1. A list of numbers from [1, 20] is generated using Array.from.
+2. The .map() function loops over the list.
+3. Basic JavaScript is used to create options for a <select> dropdown.
 
-### Prevent defualt on submit in forms
+   ```
+   <form className="add-form">
+     <h3 className="font-bold text-gray-200">
+       Don't forget to bring your stuff now, So what do you think you need for
+       this trip?
+     </h3>
+     <select>
+       {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
+         <option value={num} key={num}>
+           {num}
+         </option>
+       ))}
+     </select>
+     <input type="text" placeholder="Name of the item...." />
+     <button>Add</button>
+   </form>
+   ```
 
+### Prevent Default on Form Submit
+
+Use e.preventDefault() to stop the default behavior when submitting forms.
+
+    ```
     const onSubmit = (e) => {
       e.preventDefault();
     };
+    ```
 
-### Diff between state and props
+### Difference Between State and Props
 
-state - internal data, more like memory data
-props - external data, comminucation between parent and child
+- State: Internal data, acts like a memory for components.
+- Props: External data, used for communication between parent and child components.
 
 ### Ways to use state
 
-- lift up state to the first parent componnet, if the siblings components aloso need to use the state
+- Lift the state to the nearest parent component if sibling components also need access to it.
 
-### sorting Items
+### Sorting Items
 
+    ```
     sortBy === "desc" &&
       (sorteditems = items
         .slice()
@@ -94,15 +110,19 @@ props - external data, comminucation between parent and child
       (sorteditems = items
         .slice()
         .sort((a, b) => Number(a.packed) - Number(b.packed)));
+    ```
 
-### Window alert for confirming somethging
+### Window Alert for Confirmation
 
-This has a boolean value, if okay is clicked it ture else false
+The window.confirm method returns a boolean value: true if "OK" is clicked, otherwise false.
 
-    const confirm = window.confirm("Are you sure you want to clear the list ?");
+    ```const confirm = window.confirm("Are you sure you want to clear the list ?");```
 
 ### Using Children
 
+You can pass children to a reusable button component like this:
+
+    ```
     <Button buttonColor={buttonColor} handle={handlePrev}>
       👈 Previous
     </Button>
@@ -118,12 +138,17 @@ This has a boolean value, if okay is clicked it ture else false
         </button>
       );
     };
+    ```
 
-### Using select and option
+### Using <select> and <option>
 
+Example of a <select> dropdown with options:
+
+    ```
     <select value={tip} onChange={(e) => setTip(Number(e.target.value))}>
       <option value="5">Tip five precent (5%)</option>
       <option value="10">Tip five precent (10%)</option>
       <option value="15">Tip five precent (15%)</option>
       <option value="20">Tip five precent (20%)</option>
     </select>
+    ```
