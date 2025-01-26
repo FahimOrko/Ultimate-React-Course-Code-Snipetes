@@ -52,3 +52,7 @@ first improt Proptype
 1. the fiber tree is like a linked list
 
 ### ReactDom does the commit on the commit phase
+
+### React work tree
+
+trigger -> update reat elems -> new virtual dom -> Reconsile diff with curr fiber tree -> Update fiber tree -> List of dom updates -> Commit pahse -> Update dom -> Update UI on screen
