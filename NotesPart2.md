@@ -40,3 +40,15 @@ first improt Proptype
       defaultRating: PropTypes.number,
       masssages: PropTypes.array,
     };
+
+### Diff between componenet , componenet instances, react element
+
+1. Component is the fuction where the jsx code is
+2. Componenet instance is , where the compoent is called like , < Tab / >
+3. React Element is basically the result of using a comonent in the code, - > this gets converted to dom elemenet
+
+### Reconciler of React is called Fiber tree
+
+1. the fiber tree is like a linked list
+
+### ReactDom does the commit on the commit phase
