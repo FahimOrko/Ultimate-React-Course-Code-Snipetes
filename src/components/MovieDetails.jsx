@@ -57,6 +57,20 @@ export const MovieDetails = ({
   }, [selectedId, movieIdFetchLink]);
 
   useEffect(() => {
+    const callBack = (e) => {
+      if (e.code === "Escape") {
+        setSelectedId(null);
+      }
+    };
+
+    document.addEventListener("keydown", callBack);
+
+    return () => {
+      document.removeEventListener("keydown", callBack);
+    };
+  }, [setSelectedId]);
+
+  useEffect(() => {
     if (!title) return;
     document.title = "Movies | " + title;
 

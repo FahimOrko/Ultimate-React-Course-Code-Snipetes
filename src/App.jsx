@@ -61,7 +61,7 @@ export default function App() {
       setError("");
       return;
     }
-
+    setSelectedId(null);
     fetchMovies();
     return () => {
       controller.abort();
