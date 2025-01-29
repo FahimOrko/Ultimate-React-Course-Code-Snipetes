@@ -1,3 +1,5 @@
+import { motion } from "motion/react";
+
 export const Star = ({
   onRate,
   full,
@@ -13,12 +15,14 @@ export const Star = ({
     cursor: "pointer",
   };
   return (
-    <span
+    <motion.span
       style={starStyle}
       role="button"
       onClick={onRate}
       onMouseEnter={onHoverIn}
       onMouseLeave={onHoverLeave}
+      whileHover={{ scale: 1.8 }}
+      whileTap={{ scale: 1 }}
     >
       {full ? (
         <svg
@@ -44,6 +48,6 @@ export const Star = ({
           />
         </svg>
       )}
-    </span>
+    </motion.span>
   );
 };

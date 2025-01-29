@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import { Logo } from "./Logo";
 
-const Navbar = ({ children }) => {
+export const Navbar = ({ children }) => {
   return (
     <nav className="nav-bar">
       <Logo />
@@ -9,5 +9,3 @@ const Navbar = ({ children }) => {
     </nav>
   );
 };
-
-export default Navbar;

@@ -18,6 +18,7 @@ export const StarRaiting = ({
   size = 48,
   defaultRating = 0,
   masssages = [],
+  setUserStarRating,
 }) => {
   const [rating, setRating] = useState(defaultRating);
   const [hoverRating, setHoverRating] = useState(0);
@@ -36,7 +37,10 @@ export const StarRaiting = ({
               key={i}
               color={color}
               size={size}
-              onRate={() => setRating(i + 1)}
+              onRate={() => {
+                setRating(i + 1);
+                setUserStarRating(i + 1);
+              }}
               full={hoverRating !== 0 ? hoverRating >= i + 1 : rating >= i + 1}
               onHoverIn={() => setHoverRating(i + 1)}
               onHoverLeave={() => setHoverRating(0)}
