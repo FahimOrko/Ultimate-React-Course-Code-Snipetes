@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Navbar } from "./components/Navbar";
 import { Main } from "./components/Main";
 import { Search } from "./components/Search";
@@ -10,63 +10,27 @@ import { WatchedSumamry } from "./components/WatchedSummary";
 import { Loader } from "./components/Loader";
 import { ErrorMsg } from "./components/ErrorMsg";
 import { MovieDetails } from "./components/MovieDetails";
+import { useMovies } from "./hooks/useMovies";
+import { useLocalStorage } from "./hooks/useLocalStorage";
 
 const apiKey = process.env.REACT_APP_API_URL;
-const fetchLink = `https://www.omdbapi.com/?i=tt3896198&apikey=${apiKey}`;
+const fetchLink = `https://www.omdbapi.com/?i=tt3896198&apikey=${apiKey}&s=`;
 const movieIdFetchLink = `https://www.omdbapi.com/?apikey=${apiKey}&i=`;
 
 export const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 
 export default function App() {
-  const [movies, setMovies] = useState([]);
-  const [watched, setWatched] = useState([]);
   const [query, setQuery] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
   const [selectedId, setSelectedId] = useState(null);
 
-  useEffect(() => {
-    const controller = new AbortController();
-    const fetchMovies = async () => {
-      try {
-        setIsLoading(true);
-        setError("");
-        const res = await fetch(fetchLink + "&s=" + query, {
-          signal: controller.signal,
-        });
+  const { movies, isLoading, error } = useMovies(
+    fetchLink,
+    query,
+    setSelectedId
+  );
 
-        if (!res.ok)
-          throw new Error(
-            "Something went wrong, Check your internet connecting or reload the page"
-          );
-
-        const data = await res.json();
-
-        if (data.Response === "False") throw new Error("Movie not found");
-
-        setMovies(data.Search);
-        setError("");
-      } catch (e) {
-        if (e.name !== "AbortError") {
-          setError(e.message);
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (query.length < 3) {
-      setMovies([]);
-      setError("");
-      return;
-    }
-    setSelectedId(null);
-    fetchMovies();
-    return () => {
-      controller.abort();
-    };
-  }, [query]);
+  const [watched, setWatched] = useLocalStorage([], "watched");
 
   const addWatchedMovie = (movie) => {
     setWatched((prev) => [...prev, movie]);
