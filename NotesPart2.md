@@ -1,224 +1,253 @@
-### Componet compostion
+# React Best Practices and Concepts
 
-Can be used to to solve prop driling probs
-the basic idea is to pass down children insted of props
-Some thing liuke this
+## Component Composition
 
-```
-    <>
-      <Navbar>
-        <Search />
-        <NavbarResults movies={movies} />
-      </Navbar>
-      <Main>
-        <MovieList>
-          <MovieInList movies={movies} />
-        </MovieList>
-        <WatchedList />
-      </Main>
-    </>
-```
+Component composition helps solve prop drilling issues by passing down children instead of props.
+Here's an example:
 
-### Passing Elemenet as children isntaed of props
-
-You can put jsx in side of prop and pass it and use it in the other jsx code as you seem fit
-This works same way you would handle a prop
-Mainly used in react router
-
-```
-    <MovieList element={<MovieInList movies={movies} />} />
-
+```jsx
+<>
+  <Navbar>
+    <Search />
+    <NavbarResults movies={movies} />
+  </Navbar>
+  <Main>
+    <MovieList>
+      <MovieInList movies={movies} />
+    </MovieList>
+    <WatchedList />
+  </Main>
+</>
 ```
 
-### Set prop types so you dont get prop errors
+## Passing Elements as Children Instead of Props
 
-So basically this is simmilar to what TS does, you set the prop type for the props of the componets, here is a expample of how you can do it in JSX
+You can pass JSX inside a prop and use it elsewhere, similar to handling a prop. This is commonly used in React Router.
 
-first improt Proptype
-
-```
-    import PropTypes from "prop-types";
-
-    StarRaiting.prototype = {
-      maxRating: PropTypes.number,
-      color: PropTypes.string,
-      size: PropTypes.number,
-      defaultRating: PropTypes.number,
-      masssages: PropTypes.array,
-    };
+```jsx
+<MovieList element={<MovieInList movies={movies} />} />
 ```
 
-### Diff between componenet , componenet instances, react element
+## Prop Types for Error Prevention
 
-1. Component is the fuction where the jsx code is
-2. Componenet instance is , where the compoent is called like , < Tab / >
-3. React Element is basically the result of using a comonent in the code, - > this gets converted to dom elemenet
+To avoid prop-related errors, define prop types for components (similar to TypeScript).
 
-### Reconciler of React is called Fiber tree
+First, import `PropTypes`:
 
-1. the fiber tree is like a linked list
+```jsx
+import PropTypes from "prop-types";
 
-### ReactDom does the commit on the commit phase
-
-### React work tree
-
-trigger -> update reat elems -> new virtual dom -> Reconsile diff with curr fiber tree -> Update fiber tree -> List of dom updates -> Commit pahse -> Update dom -> Update UI on screen
-
-### Using key in react instances
-
-1. You should always use unique keys if you dont want to update an elemeent on rerender when the elem is the same as prev one. Mainoly for time compelxity, Thats why there should be a unzie key always when you llop ovwer a list and each item should have uniue key
-2. Howver on the other hand you if a componet instance is the same and eveyhtingis same, but lets says props are diffrent and you need to update the state, you can send in a diffrent key and when react renders the page it will reset the state.
-
-### Useing useEffect
-
-1. So this useEffect code gets run after each render, so if one state in the code gets changes a render happens and this will get runed then
-
-```
-  useEffect(() => {
-    console.log("after every render");
-  });
+StarRating.propTypes = {
+  maxRating: PropTypes.number,
+  color: PropTypes.string,
+  size: PropTypes.number,
+  defaultRating: PropTypes.number,
+  messages: PropTypes.array,
+};
 ```
 
-2. This code get ran on the inital render well after the intial render only once as there is nothing dependecy array
+## Differences Between Component, Component Instances, and React Elements
 
-```
-  useEffect(() => {
-    console.log("On intial mount");
-  }, []);
-```
+1. **Component**: A function that returns JSX.
+2. **Component Instance**: When the component is used (`<Tab />`).
+3. **React Element**: The result of using a component, which gets converted into a DOM element.
 
-3. This code gets runed on each time an item on the dependcy array gets cahges, these are usally states adn can be any otehr thing. Mainly the things that causes as rerender are here and based on that the code gets ran.
+## React Fiber and Reconciliation
 
-```
-  useEffect(() => {
-    console.log("after on the the intems from depnedency array get changed");
-  }, [queery, titile]);
-```
+1. React's reconciler is called **Fiber Tree**, structured like a linked list.
+2. **ReactDOM** commits updates during the commit phase.
 
-4. Some code snippets of useEffect in actaul program
+### React Work Process:
 
-```
-  const [query, setQuery] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-  const fetchLink = `https://www.omdbapi.com/?i=tt3896198&apikey=${apiKey}&s=`;
+1. Trigger an update
+2. Create new React elements
+3. Generate a new Virtual DOM
+4. Reconcile differences with the current Fiber tree
+5. Update the Fiber tree
+6. Create a list of DOM updates
+7. Commit phase: Update DOM and UI on screen
 
-  useEffect(() => {
-    const fetchMovies = async () => {
-      try {
-        setIsLoading(true);
-        setError("");
-        const res = await fetch(fetchLink + query.toLowerCase());
+## Using Keys in React Lists
 
-        if (!res.ok)
-          throw new Error(
-            "Something went wrong, Check your internet connecting or reload the page"
-          );
+1. Always use **unique keys** to prevent unnecessary re-renders.
+2. If a component instance remains the same but needs a state reset, use a different key.
 
-        const data = await res.json();
+## Using `useEffect`
 
-        if (data.Response === "False") throw new Error("Movie not found");
+### Running After Every Render
 
-        setMovies(data.Search);
-      } catch (e) {
-        console.log(e.message);
-        setError(e.message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchMovies();
-  }, [query, fetchLink]);
+```jsx
+useEffect(() => {
+  console.log("After every render");
+});
 ```
 
-### Cleanup Fuction
+### Running Only Once After Initial Render
 
-Basically in use effect fuction we make changes to the outside world
-And when the changes are made and we want to go back to the prev state we use cleanup fuction
-its basically a fuction you return in use effect hook
-example below
-
+```jsx
+useEffect(() => {
+  console.log("On initial mount");
+}, []);
 ```
 
-  useEffect(() => {
-    if (!title) return;
-    document.title = "Movies | " + title;
+### Running When Dependencies Change
 
-    return () => {
-      document.title = "Movie Reviews";
-    };
-  }, [title]);
-
-
+```jsx
+useEffect(() => {
+  console.log("Runs when query or title changes");
+}, [query, title]);
 ```
 
-another exp of cleanup fuction
+### Example: Fetching Data With `useEffect`
 
-```
-  useEffect(() => {
-    const callBack = (e) => {
-      if (e.code === "Escape") {
-        setSelectedId(null);
-      }
-    };
-
-    document.addEventListener("keydown", callBack);
-
-    return () => {
-      document.removeEventListener("keydown", callBack);
-    };
-  }, [setSelectedId]);
-
-```
-
-### AbortController - cleanup Fuction
-
-Another Cleanup fuction is AbortController, basically when you make a fetch request and with each new key a new req is made, like when you search something in say a serch bar and
-a new req is made with ecry key stokle its best practice to shut down the previous fetch reqs and here you can use AbortController for that
-
-```
-
-  useEffect(() => {
-    const controller = new AbortController();
-    const fetchMovies = async () => {
-      try {
-        setIsLoading(true);
-        setError("");
-        const res = await fetch(fetchLink + "&s=" + query, {
-          signal: controller.signal,
-        });
-
-        if (!res.ok)
-          throw new Error(
-            "Something went wrong, Check your internet connecting or reload the page"
-          );
-
-        const data = await res.json();
-
-        if (data.Response === "False") throw new Error("Movie not found");
-
-        setMovies(data.Search);
-        setError("");
-      } catch (e) {
-        if (e.name !== "AbortError") {
-          setError(e.message);
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (query.length < 3) {
-      setMovies([]);
+```jsx
+useEffect(() => {
+  const fetchMovies = async () => {
+    try {
+      setIsLoading(true);
       setError("");
-      return;
+      const res = await fetch(fetchLink + query.toLowerCase());
+
+      if (!res.ok) throw new Error("Network error");
+
+      const data = await res.json();
+      if (data.Response === "False") throw new Error("Movie not found");
+
+      setMovies(data.Search);
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setIsLoading(false);
     }
+  };
+  fetchMovies();
+}, [query]);
+```
 
-    fetchMovies();
-    return () => {
-      controller.abort();
+## Cleanup Functions in `useEffect`
+
+Used to **revert changes** made to the outside world (e.g., event listeners, subscriptions).
+
+### Example: Updating Document Title
+
+```jsx
+useEffect(() => {
+  if (!title) return;
+  document.title = "Movies | " + title;
+
+  return () => {
+    document.title = "Movie Reviews";
+  };
+}, [title]);
+```
+
+### Example: Event Listener Cleanup
+
+```jsx
+useEffect(() => {
+  const callback = (e) => {
+    if (e.code === "Escape") {
+      setSelectedId(null);
+    }
+  };
+
+  document.addEventListener("keydown", callback);
+
+  return () => {
+    document.removeEventListener("keydown", callback);
+  };
+}, [setSelectedId]);
+```
+
+## AbortController for Fetch Cleanup
+
+To prevent multiple unnecessary API calls when typing in a search bar:
+
+```jsx
+useEffect(() => {
+  const controller = new AbortController();
+  const fetchMovies = async () => {
+    try {
+      setIsLoading(true);
+      setError("");
+      const res = await fetch(fetchLink + "&s=" + query, {
+        signal: controller.signal,
+      });
+
+      if (!res.ok) throw new Error("Network error");
+
+      const data = await res.json();
+      if (data.Response === "False") throw new Error("Movie not found");
+
+      setMovies(data.Search);
+    } catch (e) {
+      if (e.name !== "AbortError") {
+        setError(e.message);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (query.length < 3) {
+    setMovies([]);
+    return;
+  }
+
+  fetchMovies();
+  return () => controller.abort();
+}, [query]);
+```
+
+## Local Storage in React
+
+### Retrieving from Local Storage
+
+```jsx
+const [watched, setWatched] = useState(() => {
+  const storedVal = localStorage.getItem("watched");
+  return JSON.parse(storedVal) || [];
+});
+```
+
+### Storing in Local Storage
+
+```jsx
+useEffect(() => {
+  localStorage.setItem("watched", JSON.stringify(watched));
+}, [watched]);
+```
+
+## Using `useRef`
+
+### Example: Storing a DOM Reference
+
+```jsx
+export const Search = ({ query, setQuery }) => {
+  const inputEl = useRef(null);
+
+  useEffect(() => {
+    const callback = (e) => {
+      if (document.activeElement === inputEl.current) return;
+      if (e.code === "Enter") inputEl.current.focus();
+      setQuery("");
     };
-  }, [query]);
 
+    document.addEventListener("keydown", callback);
+    return () => {
+      document.removeEventListener("keydown", callback);
+    };
+  }, [setQuery]);
 
+  return (
+    <input
+      className="search"
+      type="text"
+      placeholder="Search movies..."
+      value={query}
+      onChange={(e) => setQuery(e.target.value)}
+      ref={inputEl}
+    />
+  );
+};
 ```
