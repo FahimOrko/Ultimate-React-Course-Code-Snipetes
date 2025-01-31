@@ -1,4 +1,6 @@
-### Toggling a Boolean with `!`
+# React Best Practices and Concepts
+
+## Toggling a Boolean with `!`
 
 The `!` operator inverts a boolean value. For example, `!true` becomes `false`, and `!false` becomes `true`. You can use this to toggle a state variable:
 
@@ -8,7 +10,7 @@ The `!` operator inverts a boolean value. For example, `!true` becomes `false`, 
 </button>
 ```
 
-### Using a Function Inside `onClick`
+## Using a Function Inside `onClick`
 
 You can execute logic within an `onClick` handler by using an inline function or referencing an external function:
 
@@ -21,7 +23,7 @@ You can execute logic within an `onClick` handler by using an inline function or
 </button>
 ```
 
-### Best Practices for State Updates
+## Best Practices for State Updates
 
 Use a callback function to update state values correctly:
 
@@ -31,11 +33,11 @@ const handleNext = () => {
 };
 ```
 
-### Accessing Emojis
+## Accessing Emojis
 
 Press `Win + .` to open the emoji picker.
 
-### Generating Arrays with `Array.from`
+## Generating Arrays with `Array.from`
 
 `Array.from` can be used to create an array dynamically:
 
@@ -66,7 +68,7 @@ Example usage in a form:
 </form>
 ```
 
-### Preventing Default Form Submission
+## Preventing Default Form Submission
 
 Use `e.preventDefault()` to stop a form from refreshing the page:
 
@@ -76,16 +78,16 @@ const onSubmit = (e) => {
 };
 ```
 
-### State vs. Props
+## State vs. Props
 
 - **State**: Internal data managed by a component.
 - **Props**: External data passed from a parent component.
 
-### Managing State Across Components
+## Managing State Across Components
 
 Lift the state up to the nearest parent component if multiple sibling components need access to it.
 
-### Sorting Items
+## Sorting Items
 
 ```jsx
 if (sortBy === "desc") {
@@ -101,7 +103,7 @@ if (sortBy === "packed") {
 }
 ```
 
-### Confirming Actions with `window.confirm`
+## Confirming Actions with `window.confirm`
 
 The `window.confirm` method prompts the user with an OK/Cancel dialog and returns a boolean:
 
@@ -109,7 +111,7 @@ The `window.confirm` method prompts the user with an OK/Cancel dialog and return
 const confirm = window.confirm("Are you sure you want to clear the list?");
 ```
 
-### Using `children` in Components
+## Using `children` in Components
 
 Pass children elements to a reusable button component:
 
@@ -126,7 +128,7 @@ const Button = ({ buttonColor, handle, children }) => {
 };
 ```
 
-### Using `select` and `option`
+## Using `select` and `option`
 
 Example dropdown menu for selecting a tip percentage:
 
