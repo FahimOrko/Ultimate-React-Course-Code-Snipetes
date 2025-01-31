@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 import { StarRaiting } from "./StarRaiting";
 import { Loader } from "./Loader";
+import { useKey } from "../hooks/useKey";
 
 export const MovieDetails = ({
   selectedId,
@@ -50,19 +51,7 @@ export const MovieDetails = ({
     getMovieDetails();
   }, [selectedId, movieIdFetchLink]);
 
-  useEffect(() => {
-    const callBack = (e) => {
-      if (e.code === "Escape") {
-        setSelectedId(null);
-      }
-    };
-
-    document.addEventListener("keydown", callBack);
-
-    return () => {
-      document.removeEventListener("keydown", callBack);
-    };
-  }, [setSelectedId]);
+  useKey("Escape", setSelectedId);
 
   useEffect(() => {
     if (!title) return;
