@@ -1,156 +1,140 @@
-### Using !
+### Toggling a Boolean with `!`
 
-A boolean value can be toggled using `!`. For example, `!true` equals `false` and vice versa (`!false` equals `true`). You can apply this by placing `!` before a variable containing a boolean value to get its opposite:
+The `!` operator inverts a boolean value. For example, `!true` becomes `false`, and `!false` becomes `true`. You can use this to toggle a state variable:
 
-```
-    <button
-      className="close"
-        onClick={() => {
-          // console.log("-------------------------------------");
-          // console.log("intaitally", isOpen);
-          // console.log("after change", !isOpen);
-          // console.log("-------------------------------------");
-          return setIsOpen(!isOpen);
-        }} >
-      &times;
-    </button>
+```jsx
+<button className="close" onClick={() => setIsOpen(!isOpen)}>
+  &times;
+</button>
 ```
 
-### Using a Function Inside onClick
+### Using a Function Inside `onClick`
 
-You can use a function inside the onClick handler to execute logic as long as it returns a value. When using a function defined outside the JSX code, simply write its name without parentheses to reference it, as React expects it that way.
+You can execute logic within an `onClick` handler by using an inline function or referencing an external function:
 
+```jsx
+<button style={buttonColor} onClick={() => handlePrev()}>
+  Previous
+</button>
+<button style={buttonColor} onClick={handleNext}>
+  Next
+</button>
 ```
-    <button style={buttonColor} onClick={() => handlePrev()}>
-      Previous
-    </button>
-    <button style={buttonColor} onClick={handleNext}>
-      Next
-    </button>
+
+### Best Practices for State Updates
+
+Use a callback function to update state values correctly:
+
+```jsx
+const handleNext = () => {
+  return step < 3 && setStep((s) => s + 1);
+};
 ```
 
-### Best Practices for Using States
+### Accessing Emojis
 
-Use a callback function when updating states. For example:
+Press `Win + .` to open the emoji picker.
 
-    ```
-    const handleNext = () => {
-      return step < 3 && setStep((s) => s + 1);
-    };
-    ```
+### Generating Arrays with `Array.from`
 
-### Get Emojis Section
+`Array.from` can be used to create an array dynamically:
 
-button - win + .
-
-### Array.from Method
-
-This method is helpful for generating arrays, such as rows of numbers.
-
+```jsx
+{
+  Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
+    <option value={num} key={num}>
+      {num}
+    </option>
+  ));
+}
 ```
-    {Array.from({ length: 20 }, (\_, i) => i + 1).map((num) => (
+
+Example usage in a form:
+
+```jsx
+<form className="add-form">
+  <h3 className="font-bold text-gray-200">What do you need for this trip?</h3>
+  <select>
+    {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
       <option value={num} key={num}>
         {num}
       </option>
     ))}
+  </select>
+  <input type="text" placeholder="Name of the item..." />
+  <button>Add</button>
+</form>
 ```
 
-Here’s what happens:
+### Preventing Default Form Submission
 
-1. A list of numbers from [1, 20] is generated using Array.from.
-2. The .map() function loops over the list.
-3. Basic JavaScript is used to create options for a select dropdown.
+Use `e.preventDefault()` to stop a form from refreshing the page:
 
-```
-   <form className="add-form">
-     <h3 className="font-bold text-gray-200">
-       Don't forget to bring your stuff now, So what do you think you need for
-       this trip?
-     </h3>
-     <select>
-       {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
-         <option value={num} key={num}>
-           {num}
-         </option>
-       ))}
-     </select>
-     <input type="text" placeholder="Name of the item...." />
-     <button>Add</button>
-   </form>
+```jsx
+const onSubmit = (e) => {
+  e.preventDefault();
+};
 ```
 
-### Prevent Default on Form Submit
+### State vs. Props
 
-Use e.preventDefault() to stop the default behavior when submitting forms.
+- **State**: Internal data managed by a component.
+- **Props**: External data passed from a parent component.
 
-```
-    const onSubmit = (e) => {
-      e.preventDefault();
-    };
-```
+### Managing State Across Components
 
-### Difference Between State and Props
-
-- State: Internal data, acts like a memory for components.
-- Props: External data, used for communication between parent and child components.
-
-### Ways to use state
-
-- Lift the state to the nearest parent component if sibling components also need access to it.
+Lift the state up to the nearest parent component if multiple sibling components need access to it.
 
 ### Sorting Items
 
-```
-    sortBy === "desc" &&
-      (sorteditems = items
-        .slice()
-        .sort((a, b) => a.description.localeCompare(b.description)));
+```jsx
+if (sortBy === "desc") {
+  sortedItems = items
+    .slice()
+    .sort((a, b) => a.description.localeCompare(b.description));
+}
 
-    sortBy === "packed" &&
-      (sorteditems = items
-        .slice()
-        .sort((a, b) => Number(a.packed) - Number(b.packed)));
-```
-
-### Window Alert for Confirmation
-
-The window.confirm method returns a boolean value: true if "OK" is clicked, otherwise false.
-
-```
-const confirm = window.confirm("Are you sure you want to clear the list ?");
+if (sortBy === "packed") {
+  sortedItems = items
+    .slice()
+    .sort((a, b) => Number(a.packed) - Number(b.packed));
+}
 ```
 
-### Using Children
+### Confirming Actions with `window.confirm`
 
-You can pass children to a reusable button component like this:
+The `window.confirm` method prompts the user with an OK/Cancel dialog and returns a boolean:
 
-```
-    <Button buttonColor={buttonColor} handle={handlePrev}>
-      👈 Previous
-    </Button>
-    <Button buttonColor={buttonColor} handle={handleNext}>
-      Next 👉{" "}
-    </Button>
-
-
-    const Button = ({ buttonColor, handle, children }) => {
-      return (
-        <button style={buttonColor} onClick={handle}>
-          {children}
-        </button>
-      );
-    };
+```jsx
+const confirm = window.confirm("Are you sure you want to clear the list?");
 ```
 
-### Using select and option
+### Using `children` in Components
 
-Example of a select dropdown with options:
+Pass children elements to a reusable button component:
 
+```jsx
+<Button buttonColor={buttonColor} handle={handlePrev}>
+  👈 Previous
+</Button>
+<Button buttonColor={buttonColor} handle={handleNext}>
+  Next 👉
+</Button>
+
+const Button = ({ buttonColor, handle, children }) => {
+  return <button style={buttonColor} onClick={handle}>{children}</button>;
+};
 ```
-    <select value={tip} onChange={(e) => setTip(Number(e.target.value))}>
-      <option value="5">Tip five precent (5%)</option>
-      <option value="10">Tip five precent (10%)</option>
-      <option value="15">Tip five precent (15%)</option>
-      <option value="20">Tip five precent (20%)</option>
-    </select>
+
+### Using `select` and `option`
+
+Example dropdown menu for selecting a tip percentage:
+
+```jsx
+<select value={tip} onChange={(e) => setTip(Number(e.target.value))}>
+  <option value="5">Tip 5%</option>
+  <option value="10">Tip 10%</option>
+  <option value="15">Tip 15%</option>
+  <option value="20">Tip 20%</option>
+</select>
 ```
