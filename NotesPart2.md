@@ -251,3 +251,28 @@ export const Search = ({ query, setQuery }) => {
   );
 };
 ```
+
+## Custom Hooks
+
+Custom hooks are created to encapsulate reusable logic, similar to components. However, instead of using props, you pass objects or values to a function. This approach helps keep your code clean and modular.
+
+### Example: useLocalStorage Hook
+
+The following custom hook, `useLocalStorage`, manages state while syncing it with `localStorage`:
+
+```javascript
+import { useEffect, useState } from "react";
+
+export const useLocalStorage = (initialState, key) => {
+  const [value, setValue] = useState(() => {
+    const storedVal = localStorage.getItem(key);
+    return storedVal ? JSON.parse(storedVal) : initialState;
+  });
+
+  useEffect(() => {
+    localStorage.setItem(key, JSON.stringify(value));
+  }, [value, key]);
+
+  return [value, setValue];
+};
+```
