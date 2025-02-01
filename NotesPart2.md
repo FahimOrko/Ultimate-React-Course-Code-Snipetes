@@ -199,6 +199,20 @@ useEffect(() => {
 }, [query]);
 ```
 
+## Cleanup after setting a timer
+
+```jsx
+export const Timer = ({ dispatch, secRemaining }) => {
+  useEffect(() => {
+    const id = setInterval(() => {
+      dispatch({ type: "tick" });
+    }, 1000);
+    return () => clearInterval(id);
+  }, [dispatch]);
+  return <div className="timer">{secRemaining}</div>;
+};
+```
+
 ## Local Storage in React
 
 ### Retrieving from Local Storage
