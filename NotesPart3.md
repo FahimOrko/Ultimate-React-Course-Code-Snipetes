@@ -66,3 +66,87 @@ const App = () => {
   const { questions, status, index, answer, points, highscore } = state;
 };
 ```
+
+## Set up eslint in vite project
+
+```console
+npm i eslint vite-plugin-eslint eslint-config-react-app --save-dev
+```
+
+vite.config.js file -
+
+```javascript
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import eslint from "vite-plugins-eslint";
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [react(), eslint()],
+});
+```
+
+.eslintrc.json file -
+
+```javascript
+{
+  "extends": "react-app"
+}
+```
+
+## Istalling react router
+
+```console
+$ npm i react-router-dom
+```
+
+## React Router
+
+Here you can see how the routing works, simply set the path in path and then call the page componet in elemenet
+
+```jsx
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { ProductsPage } from "./pages/ProductsPage";
+import { PricingPage } from "./pages/PricingPage";
+import { HomePage } from "./pages/HomePage";
+import { NotFoundPage } from "./pages/NotFoundPage";
+
+const App = () => {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="pricing" element={<PricingPage />} />
+        <Route path="product" element={<ProductsPage />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </BrowserRouter>
+  );
+};
+
+export default App;
+```
+
+and here is how yo set the links to the page -
+
+```jsx
+import { Link } from "react-router-dom";
+
+export const Navbar = () => {
+  return (
+    <nav>
+      <ul>
+        <li>
+          <Link to="/">Home</Link>
+        </li>
+        <li>
+          <Link to="/products">Products</Link>
+        </li>
+        <li>
+          <Link to="/pricing">Pricing</Link>
+        </li>
+      </ul>
+    </nav>
+  );
+};
+```
