@@ -416,3 +416,99 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 ```
 
 Using `replace` in `<Navigate replace to="cities" />` ensures that users cannot navigate back to the original URL before redirection, improving navigation control in single-page applications.
+
+## Context API
+
+This demonstrates how to set up and use the Context API in React to manage and share state across components. The example provided showcases a blog post application where posts, search queries, and UI state are shared using `PostContext`.
+
+### Setting Up Context API
+
+First, create the context:
+
+```jsx
+const PostContext = createContext();
+```
+
+Next, wrap the return JSX with `<PostContext.Provider>` and pass the necessary state and functions as context values.
+
+```jsx
+const PostContext = createContext();
+
+function App() {
+  const [posts, setPosts] = useState(() =>
+    Array.from({ length: 30 }, () => createRandomPost())
+  );
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isFakeDark, setIsFakeDark] = useState(false);
+
+  // Derived state for filtering posts
+  const searchedPosts =
+    searchQuery.length > 0
+      ? posts.filter((post) =>
+          `${post.title} ${post.body}`
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase())
+        )
+      : posts;
+
+  function handleAddPost(post) {
+    setPosts((posts) => [post, ...posts]);
+  }
+
+  function handleClearPosts() {
+    setPosts([]);
+  }
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("fake-dark-mode");
+  }, [isFakeDark]);
+
+  return (
+    <PostContext.Provider
+      value={{
+        posts: searchedPosts,
+        onAddPost: handleAddPost,
+        onClearPosts: handleClearPosts,
+        searchQuery,
+        setSearchQuery,
+      }}
+    >
+      <section>
+        <button
+          onClick={() => setIsFakeDark((prev) => !prev)}
+          className="btn-fake-dark-mode"
+        >
+          {isFakeDark ? "☀️" : "🌙"}
+        </button>
+        <Header />
+        <Main />
+        <Archive />
+        <Footer />
+      </section>
+    </PostContext.Provider>
+  );
+}
+```
+
+### Consuming Context Values
+
+To access the provided context values, use `useContext` within a component.
+
+```jsx
+function Header() {
+  const { onClearPosts } = useContext(PostContext);
+
+  return (
+    <header>
+      <h1>
+        <span>⚛️</span>The Atomic Blog
+      </h1>
+      <div>
+        <Results />
+        <SearchPosts />
+        <button onClick={onClearPosts}>Clear posts</button>
+      </div>
+    </header>
+  );
+}
+```
