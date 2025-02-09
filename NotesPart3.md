@@ -512,3 +512,128 @@ function Header() {
   );
 }
 ```
+
+## Custom Context Hook Boilerplate
+
+This section provides a boilerplate for setting up a custom context hook in React to manage city-related state globally. The `CitiesContext` allows components to access and update city data easily without prop drilling.
+
+### Creating the Context and Provider
+
+The `CitiesProvider` component fetches city data from a local server and provides it through context. Components can consume this context to access city data and loading state.
+
+````jsx
+import { createContext, useContext, useEffect, useState } from "react";
+
+const CitiesContext = createContext();
+const BASE_URL = "http://localhost:9000";
+
+const CitiesProvider = ({ children }) => {
+  const [cities, setCities] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const getCities = async () => {
+      try {
+        setIsLoading(true);
+        const res = await fetch(`${BASE_URL}/cities`);
+        const data = await res.json();
+        setCities(data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    getCities();
+  }, []);
+
+  return (
+    <CitiesContext.Provider
+      value={{
+        cities,
+        isLoading,
+      }}
+    >
+      {children}
+    </CitiesContext.Provider>
+  );
+};
+
+### Creating a Custom Hook
+The `useCities` hook simplifies consuming the context and ensures it is used within a valid provider.
+
+```jsx
+const useCities = () => {
+  const context = useContext(CitiesContext);
+  if (context === undefined)
+    throw new Error("CitiesContext is used outside provider");
+  return context;
+};
+
+export { CitiesProvider, useCities };
+````
+
+---
+
+## State Placement Options
+
+### Understanding Different State Management Approaches
+
+Below are various methods for managing state in a React application:
+
+1. **Local state** - `useState`, `useReducer`, `useRef`
+2. **Lifting state up** - `useState`, `useReducer`, `useRef`
+3. **Global state** - Context API + `useState` / `useReducer` (UI state)
+4. **Global state** - Redux, React Query (TanStack), Zustand (Remote / UI)
+5. **Global state, Passing between routes** - React Router
+6. **Storing data in the browser** - Local storage, session storage
+
+![State Placement](image-2.png)
+
+---
+
+## State Management Tool Options
+
+### Choosing the Right State Management Tool
+
+Various tools are available for managing state effectively, depending on the complexity and scale of the application.
+
+![State Management Tools](image.png)
+
+---
+
+## Using Leaflet.js
+
+Leaflet.js is a JavaScript library for interactive maps. This section demonstrates how to integrate it with React using `react-leaflet`.
+
+To use Leaflet.js, install the required npm packages:
+
+```sh
+npm i react-leaflet leaflet
+```
+
+### Boilerplate Code
+
+Below is a basic example of rendering a map with markers for different cities.
+
+```jsx
+<MapContainer
+  center={mapPosition}
+  zoom={13}
+  scrollWheelZoom={true}
+  className={styles.map}
+>
+  <TileLayer
+    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
+  />
+  {cities.map((city) => (
+    <Marker position={[city.position.lat, city.position.lng]} key={city.id}>
+      <Popup>
+        <span>{city.emoji}</span>
+        <span>{city.cityName}</span>
+      </Popup>
+    </Marker>
+  ))}
+</MapContainer>
+```
