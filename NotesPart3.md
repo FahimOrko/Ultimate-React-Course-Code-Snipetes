@@ -630,7 +630,7 @@ Below are various methods for managing state in a React application:
 5. **Global state, Passing between routes** - React Router
 6. **Storing data in the browser** - Local storage, session storage
 
-![State Placement](image-2.png)
+![State Placement](./public/Section-03/image-2.png)
 
 ---
 
@@ -640,7 +640,7 @@ Below are various methods for managing state in a React application:
 
 Various tools are available for managing state effectively, depending on the complexity and scale of the application.
 
-![State Management Tools](image.png)
+![State Management Tools](./public/Section-03/image.png)
 
 ---
 
@@ -774,33 +774,42 @@ This setup provides a simple and effective way to manage protected routes in a R
 
 ## Performance Optimization Tools
 
-![alt text](image-1.png)
+Efficient performance optimization is crucial for React applications to prevent unnecessary re-renders and enhance user experience. The image below highlights key tools and techniques for optimizing React performance, such as memoization, lazy loading, and batching updates.
+
+![alt text](./public/Section-03/image-1.png)
 
 ---
 
-## Components Rerender Cases
+## Components Re-render Cases
 
-![alt text](image-4.png)
+Understanding when and why components re-render is essential for optimizing performance. This section visually represents different cases that trigger re-renders in React, such as state updates, prop changes, and parent re-renders.
+
+![alt text](./public/Section-03/image-4.png)
 
 ---
 
 ## Memoization
 
-![alt text](image-5.png)
+Memoization helps store and reuse previous computations, preventing expensive recalculations and unnecessary re-renders. The images below illustrate how memoization works in React and when to use techniques like `memo`, `useMemo`, and `useCallback` for optimizing performance.
 
-![alt text](image-6.png)
+![alt text](./public/Section-03/image-5.png)
+
+![alt text](./public/Section-03/image-6.png)
 
 ---
 
-## Useing Memo
+## Using Memo
+
+### Optimizing Component Rendering with `memo`
+
+`memo` is a higher-order component that optimizes functional components by preventing unnecessary re-renders when props remain the same.
 
 #### Example
 
 ```jsx
 const Archive = memo(({ show }) => {
-  // Here we don't need the setter function. We're only using state to store these posts because the callback function passed into useState (which generates the posts) is only called once, on the initial render. So we use this trick as an optimization technique, because if we just used a regular variable, these posts would be re-created on every render. We could also move the posts outside the components, but I wanted to show you this trick 😉
+  // Using state to store posts, ensuring posts are generated only once at initial render.
   const [posts] = useState(() =>
-    // 💥 WARNING: This might make your computer slow! Try a smaller `length` first
     Array.from({ length: 10000 }, () => createRandomPost())
   );
 
@@ -820,7 +829,6 @@ const Archive = memo(({ show }) => {
               <p>
                 <strong>{post.title}:</strong> {post.body}
               </p>
-              {/* <button onClick={}>Add as new post</button> */}
             </li>
           ))}
         </ul>
@@ -829,5 +837,178 @@ const Archive = memo(({ show }) => {
   );
 });
 ```
+
+---
+
+## Issues Using `memo`
+
+While `memo` helps optimize performance, it has some drawbacks, such as unnecessary re-renders due to reference changes in objects or functions passed as props.
+
+![alt text](./public/Section-03/image-7.png)
+
+---
+
+## Solution to `memo` Issues
+
+Using `useMemo` and `useCallback` can help prevent unnecessary re-renders caused by changing object references or functions.
+
+![alt text](./public/Section-03/image-8.png)
+
+---
+
+## Three Key Use Cases for `useMemo` and `useCallback`
+
+These hooks are commonly used to optimize component performance by avoiding expensive recalculations or function re-creations.
+
+![alt text](./public/Section-03/image-9.png)
+
+---
+
+## Using `useMemo` Hook
+
+`useMemo` is used to memoize values, preventing re-computation when dependencies haven't changed. This is especially useful when passing objects as props, as `memo` alone won't prevent unnecessary re-renders.
+
+#### Example
+
+```jsx
+const archiveOptions = useMemo(() => {
+  return {
+    show: false,
+    title: "Hello World",
+  };
+}, []);
+```
+
+---
+
+### Optimized Component with `useMemo`
+
+```jsx
+const Archive = memo(({ archiveOptions }) => {
+  const { show, title } = archiveOptions;
+
+  const [posts] = useState(() =>
+    Array.from({ length: 10000 }, () => createRandomPost())
+  );
+
+  const [showArchive, setShowArchive] = useState(show);
+
+  return (
+    <aside>
+      <h2>{title}</h2>
+      <button onClick={() => setShowArchive((s) => !s)}>
+        {showArchive ? "Hide archive posts" : "Show archive posts"}
+      </button>
+
+      {showArchive && (
+        <ul>
+          {posts.map((post, i) => (
+            <li key={i}>
+              <p>
+                <strong>{post.title}:</strong> {post.body}
+              </p>
+            </li>
+          ))}
+        </ul>
+      )}
+    </aside>
+  );
+});
+```
+
+---
+
+## `useCallback` Hook
+
+`useCallback` is used to memoize functions, preventing their re-creation on every render. This is useful when passing functions as props to `memoized` components.
+
+#### Example
+
+```jsx
+const handleAddPost = useCallback((post) => {
+  setPosts((posts) => [post, ...posts]);
+}, []);
+```
+
+---
+
+## Lazy loading
+
+Lazy loading is a performance optimization technique that helps reduce the initial load time of a React application. Instead of loading all components and pages at once, lazy loading ensures that only the necessary parts of the app are loaded when needed. This significantly improves the user experience, especially for large applications.
+
+#### Optimizing bundle size by code spliting
+
+Code splitting helps optimize the application's JavaScript bundle size by splitting it into smaller, more manageable chunks. This reduces the amount of JavaScript that needs to be loaded upfront, improving page load times.
+
+![alt text](./public/Section-03/image10.png)
+
+#### Lazy loader pages
+
+React provides the `lazy` function to dynamically import components only when they are needed. To handle loading states while waiting for the component to load, React’s `Suspense` component is used with a `fallback` prop, where you can display a loading spinner or message.
+
+#### Code Example
+
+```jsx
+const Homepage = lazy(() => import("./pages/Homepage"));
+const Pricing = lazy(() => import("./pages/Pricing"));
+const Product = lazy(() => import("./pages/Product"));
+const AppLayout = lazy(() => import("./pages/AppLayout"));
+const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
+const Login = lazy(() => import("./pages/Login"));
+
+const App = () => {
+  return (
+    <CitiesProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <Suspense fallback={<SpinnerFullPage />}>
+            <Routes>
+              <Route path="/" element={<Homepage />} />
+              <Route path="pricing" element={<Pricing />} />
+              <Route path="products" element={<Product />} />
+              <Route path="login" element={<Login />} />
+              <Route
+                path="app"
+                element={
+                  <ProtectedRoutes>
+                    <AppLayout />
+                  </ProtectedRoutes>
+                }
+              >
+                <Route index element={<Navigate replace to="cities" />} />
+                <Route path="cities" element={<CityList />} />
+                <Route path="cities/:id" element={<City />} />
+                <Route path="countries" element={<CountryList />} />
+                <Route path="form" element={<Form />} />
+              </Route>
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </Suspense>
+        </BrowserRouter>
+      </AuthProvider>
+    </CitiesProvider>
+  );
+};
+```
+
+## Optimization DOs amd DONts
+
+![alt text](./public/Section-03/image11.png)
+
+---
+
+## `useEffect` Dependecy Array rules
+
+![alt text](./public/Section-03/image12.png)
+
+### How to handle uncessary depndencies
+
+![alt text](./public/Section-03/image14.png)
+
+---
+
+---
+
+---
 
 ---
