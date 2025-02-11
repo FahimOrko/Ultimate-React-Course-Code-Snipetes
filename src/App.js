@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useMemo, memo } from "react";
+import { useMemo } from "react";
 import Calculator from "./Calculator";
 import ToggleSounds from "./ToggleSounds";
 
