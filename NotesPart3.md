@@ -1,5 +1,7 @@
 # React Best Practices and Concepts
 
+---
+
 ## useReducer Hook
 
 The `useReducer` hook is useful for managing complex state logic in React applications. It helps organize state updates into a predictable flow using actions and a reducer function. Unlike `useState`, which is ideal for simple state management, `useReducer` is better suited for handling multiple related state transitions.
@@ -75,6 +77,8 @@ const App = () => {
 - Use the `useReducer` hook inside a component to manage state.
 - Dispatch actions to update state based on user interactions.
 
+---
+
 ## Setting up ESLint in a Vite Project
 
 ESLint is a popular tool for identifying and fixing problems in JavaScript code. It helps enforce best practices and maintain code quality.
@@ -117,6 +121,8 @@ Create an `.eslintrc.json` file with the following content:
 - Create an `.eslintrc.json` file to define linting rules.
 - Run ESLint to analyze and fix code issues.
 
+---
+
 ## Installing React Router
 
 React Router is a library that enables routing in React applications, allowing navigation between different pages without reloading the browser.
@@ -132,6 +138,8 @@ $ npm i react-router-dom
 - Install `react-router-dom` using npm.
 - Import necessary components like `BrowserRouter`, `Routes`, and `Route`.
 - Define different routes and associate them with corresponding components.
+
+---
 
 ## React Router Setup
 
@@ -168,6 +176,8 @@ export default App;
 - Use `Routes` to define all route mappings.
 - Assign `Route` components with `path` and corresponding page components.
 - Use `Link` from `react-router-dom` to create navigation links.
+
+---
 
 ## Nested Routes in React Router
 
@@ -227,6 +237,8 @@ export const Sidebar = () => {
   );
 };
 ```
+
+---
 
 ## Using URL Parameters and Query Strings in React Router
 
@@ -331,6 +343,8 @@ setSearchParams({ lat: newLat, lng: newLng });
 
 This approach ensures a seamless and maintainable way to handle dynamic routes and parameters in React applications using `react-router-dom`. 🚀
 
+---
+
 ## Using the `useNavigate` Hook
 
 The `useNavigate` hook in `react-router-dom` enables programmatic navigation within your React application.
@@ -375,6 +389,8 @@ To navigate back one or more steps in the history stack, use:
 </Button>
 ```
 
+---
+
 ## Using `Navigate` for Redirection
 
 The `<Navigate>` component allows you to programmatically redirect users. This is particularly useful in nested routes where you want to automatically redirect to a sub-route instead of duplicating components.
@@ -416,6 +432,8 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 ```
 
 Using `replace` in `<Navigate replace to="cities" />` ensures that users cannot navigate back to the original URL before redirection, improving navigation control in single-page applications.
+
+---
 
 ## Context API
 
@@ -513,6 +531,8 @@ function Header() {
 }
 ```
 
+---
+
 ## Custom Context Hook Boilerplate
 
 This section provides a boilerplate for setting up a custom context hook in React to manage city-related state globally. The `CitiesContext` allows components to access and update city data easily without prop drilling.
@@ -521,7 +541,7 @@ This section provides a boilerplate for setting up a custom context hook in Reac
 
 The `CitiesProvider` component fetches city data from a local server and provides it through context. Components can consume this context to access city data and loading state.
 
-````jsx
+```jsx
 import { createContext, useContext, useEffect, useState } from "react";
 
 const CitiesContext = createContext();
@@ -558,9 +578,31 @@ const CitiesProvider = ({ children }) => {
     </CitiesContext.Provider>
   );
 };
+```
+
+### Another Context API bioler plate
+
+```jsx
+import { createContext, useContext } from "react";
+
+const AuthContext = createContext();
+
+const AuthProvider = ({ children }) => {
+  return <AuthContext.Provider>{children}</AuthContext.Provider>;
+};
+
+const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined)
+    throw new Error("Context was used outside the Provider");
+};
+
+export { AuthProvider, useAuth };
+```
 
 ### Creating a Custom Hook
-The `useCities` hook simplifies consuming the context and ensures it is used within a valid provider.
+
+The useCities hook simplifies consuming the context and ensures it is used within a valid provider.
 
 ```jsx
 const useCities = () => {
@@ -571,7 +613,7 @@ const useCities = () => {
 };
 
 export { CitiesProvider, useCities };
-````
+```
 
 ---
 
@@ -637,3 +679,155 @@ Below is a basic example of rendering a map with markers for different cities.
   ))}
 </MapContainer>
 ```
+
+---
+
+## Other Ways to Use `useEffect`
+
+### Redirecting Based on Conditions
+
+One of the common uses of the `useEffect` hook is handling redirects when certain conditions are met. The `useNavigate` hook from React Router can be used as shown below:
+
+```jsx
+const navigate = useNavigate();
+useEffect(() => {
+  if (isAuthed) navigate("/app", { replace: true });
+}, [isAuthed, navigate]);
+```
+
+- The `replace: true` option ensures that when the user clicks the back button, they don't return to the redirected page but instead go back two steps in the history stack.
+
+---
+
+## Common Practice for Protecting Routes
+
+### Creating a Protected Route Component
+
+A common approach to protecting routes in a React app is to create a wrapper component that checks authentication status and redirects users if they are not authorized.
+
+```jsx
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/FakeAuthContext";
+import { useEffect } from "react";
+
+const ProtectedRoutes = ({ children }) => {
+  const { isAuthed } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isAuthed) navigate("/");
+  }, [isAuthed, navigate]);
+
+  return children;
+};
+
+export default ProtectedRoutes;
+```
+
+- This component only renders `children` if the user is authenticated.
+- If the user is not authenticated, they are redirected to the homepage (`/`).
+
+### Setting Up Protected Routes
+
+Once the `ProtectedRoutes` component is created, wrap the routes that require authentication inside it.
+
+```jsx
+const App = () => {
+  return (
+    <CitiesProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Homepage />} />
+            <Route path="pricing" element={<Pricing />} />
+            <Route path="products" element={<Product />} />
+            <Route path="login" element={<Login />} />
+            <Route
+              path="app"
+              element={
+                <ProtectedRoutes>
+                  <AppLayout />
+                </ProtectedRoutes>
+              }
+            >
+              <Route index element={<Navigate replace to="cities" />} />
+              <Route path="cities" element={<CityList />} />
+              <Route path="cities/:id" element={<City />} />
+              <Route path="countries" element={<CountryList />} />
+              <Route path="form" element={<Form />} />
+            </Route>
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </CitiesProvider>
+  );
+};
+```
+
+- The `ProtectedRoutes` wrapper ensures that only authenticated users can access the `/app` routes.
+- If an unauthenticated user tries to access these pages, they will be redirected to `/`.
+
+This setup provides a simple and effective way to manage protected routes in a React application.
+
+---
+
+## Performance Optimization Tools
+
+![alt text](image-1.png)
+
+---
+
+## Components Rerender Cases
+
+![alt text](image-4.png)
+
+---
+
+## Memoization
+
+![alt text](image-5.png)
+
+![alt text](image-6.png)
+
+---
+
+## Useing Memo
+
+#### Example
+
+```jsx
+const Archive = memo(({ show }) => {
+  // Here we don't need the setter function. We're only using state to store these posts because the callback function passed into useState (which generates the posts) is only called once, on the initial render. So we use this trick as an optimization technique, because if we just used a regular variable, these posts would be re-created on every render. We could also move the posts outside the components, but I wanted to show you this trick 😉
+  const [posts] = useState(() =>
+    // 💥 WARNING: This might make your computer slow! Try a smaller `length` first
+    Array.from({ length: 10000 }, () => createRandomPost())
+  );
+
+  const [showArchive, setShowArchive] = useState(show);
+
+  return (
+    <aside>
+      <h2>Post archive</h2>
+      <button onClick={() => setShowArchive((s) => !s)}>
+        {showArchive ? "Hide archive posts" : "Show archive posts"}
+      </button>
+
+      {showArchive && (
+        <ul>
+          {posts.map((post, i) => (
+            <li key={i}>
+              <p>
+                <strong>{post.title}:</strong> {post.body}
+              </p>
+              {/* <button onClick={}>Add as new post</button> */}
+            </li>
+          ))}
+        </ul>
+      )}
+    </aside>
+  );
+});
+```
+
+---
