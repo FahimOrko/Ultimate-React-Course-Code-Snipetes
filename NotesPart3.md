@@ -1546,3 +1546,13 @@ dispatch(createCustomer({ fullName: "John Doe", nationalId: "123456789" })); // 
 Redux Toolkit simplifies state management in React applications by reducing boilerplate and providing a structured way to handle actions and reducers. This guide covers basic store setup and examples for managing accounts and customers using Redux Toolkit.
 
 ---
+
+## Context API vs Redux
+
+![alt text](./public/Section-03/image31.png)
+
+---
+
+![alt text](./public/Section-03/image32.png)
+
+---
