@@ -1007,8 +1007,542 @@ const App = () => {
 
 ---
 
----
+## Redux
+
+![alt text](./public/Section-03/image21.png)
+
+#### Mechanism of Redux
+
+![alt text](./public/Section-03/image-22.png)
 
 ---
+
+## First look at redux code example
+
+```jsx
+import { createStore } from "redux";
+
+const initailSatte = {
+  balance: 0,
+  loan: 0,
+  loanPurpose: "",
+};
+
+const reducer = (state = initailSatte, action) => {
+  switch (action.type) {
+    case "accont/deposit":
+      return { ...state, balance: state.balance + action.payload };
+
+    case "accont/withdraw":
+      return { ...state, balance: state.balance - action.payload };
+
+    case "accont/reqLoan":
+      if (state.loan > 0) return state;
+      return {
+        ...state,
+        loan: action.payload.amount,
+        balance: state.balance + action.payload.amount,
+        loanPurpose: action.payload.purpose,
+      };
+
+    case "accont/payLoan":
+      return {
+        ...state,
+        loan: 0,
+        loanPurpose: "",
+        balance: state.balance - action.payload,
+      };
+
+    default:
+      return state;
+  }
+};
+
+const store = createStore(reducer);
+
+// store.dispatch({
+//   type: "accont/reqLoan",
+//   payload: {
+//     amount: 500,
+//     purpose: "buy a car",
+//   },
+// });
+
+// console.log(store.getState());
+
+const deposit = (amount) => {
+  return { type: "accont/deposit", payload: amount };
+};
+
+const withdraw = (amount) => {
+  return { type: "accont/withdraw", payload: amount };
+};
+
+const reqLoan = (amount, purpose) => {
+  return { type: "accont/reqLoan", payload: { amount, purpose } };
+};
+
+const payLoan = (amount) => {
+  return { type: "accont/payLoan", payload: amount };
+};
+
+store.dispatch(deposit(500));
+
+console.log(store.getState());
+
+store.dispatch(withdraw(300));
+
+console.log(store.getState());
+
+store.dispatch(reqLoan(300, "Buy a car"));
+
+console.log(store.getState());
+
+store.dispatch(payLoan(300));
+
+console.log(store.getState());
+```
+
+---
+
+## When you have more than one reducer
+
+#### Code example (Should never be like this in real world though )
+
+```jsx
+import { combineReducers, createStore } from "redux";
+
+// Initial state of the store
+const initialStateAccount = {
+  balance: 0,
+  loan: 0,
+  loanPurpose: "",
+};
+
+const initialStateCustomer = {
+  fullName: "",
+  nid: "",
+  createdAt: "",
+};
+
+// accountReducer function to handle actions
+const accountReducer = (state = initialStateAccount, action) => {
+  switch (action.type) {
+    case "account/deposit":
+      return { ...state, balance: state.balance + action.payload };
+
+    case "account/withdraw":
+      return { ...state, balance: state.balance - action.payload };
+
+    case "account/requestLoan":
+      if (state.loan > 0) return state; // Prevent multiple loans
+      return {
+        ...state,
+        loan: action.payload.amount,
+        balance: state.balance + action.payload.amount,
+        loanPurpose: action.payload.purpose,
+      };
+
+    case "account/payLoan":
+      return {
+        ...state,
+        loan: 0,
+        loanPurpose: "",
+        balance: state.balance - action.payload,
+      };
+
+    default:
+      return state;
+  }
+};
+
+// customerReducer function to handle actions
+
+const customerReducer = (state = initialStateCustomer, action) => {
+  switch (action.type) {
+    case "customer/createCustomer":
+      return {
+        ...state,
+        fullName: action.payload.fullName,
+        nid: action.payload.nid,
+        createdAt: action.payload.createdAt,
+      };
+
+    case "customer/updateName":
+      return {
+        ...state,
+        fullName: action.payload,
+      };
+
+    default:
+      return state;
+  }
+};
+
+// Create Redux store
+const rootReducer = combineReducers({
+  account: accountReducer,
+  customer: customerReducer,
+});
+const store = createStore(rootReducer);
+
+// Action creators
+const deposit = (amount) => ({ type: "account/deposit", payload: amount });
+const withdraw = (amount) => ({ type: "account/withdraw", payload: amount });
+const requestLoan = (amount, purpose) => ({
+  type: "account/requestLoan",
+  payload: { amount, purpose },
+});
+const payLoan = (amount) => ({ type: "account/payLoan", payload: amount });
+
+// Dispatch actions and log state
+store.dispatch(deposit(500));
+console.log("After deposit:", store.getState());
+
+store.dispatch(withdraw(300));
+console.log("After withdrawal:", store.getState());
+
+store.dispatch(requestLoan(300, "Buy a car"));
+console.log("After requesting loan:", store.getState());
+
+store.dispatch(payLoan(300));
+console.log("After paying loan:", store.getState());
+
+// Customer action creators
+
+const createCustomer = (fullName, nid) => {
+  return {
+    type: "customer/createCustomer",
+    payload: { fullName, nid, createdAt: new Date().toDateString() },
+  };
+};
+
+const updateName = (fullName) => {
+  return {
+    type: "customer/updateName",
+    payload: fullName,
+  };
+};
+
+// Dispatch actions customer and log state
+store.dispatch(createCustomer("Fahim Orko", 1234));
+console.log("After customer created:", store.getState());
+
+store.dispatch(updateName("Fahim"));
+console.log("After customer updated:", store.getState());
+```
+
+#### Correct way to do this
+
+You should have your two reducers in diffrent files and import and use them in the store js file
+
+like this
+
+#### Code Example
+
+```jsx
+import { combineReducers, createStore } from "redux";
+import accountReducer from "./features/accounts/accountSlice";
+import customerReducer from "./features/customers/customerSlice";
+
+// Create Redux store
+const rootReducer = combineReducers({
+  account: accountReducer,
+  customer: customerReducer,
+});
+
+const store = createStore(rootReducer);
+
+export default store;
+
+// console.log(store.getState());
+```
+
+## How to use the store in componets
+
+Here is how you can access store values
+
+```jsx
+const customer = useSelector((store) => store.customer);
+```
+
+Here is how you can access dispatch fuctions
+
+```jsx
+const dispatch = useDispatch();
+
+function handleClick() {
+  dispatch(createCustomer("John Doe", 1234));
+}
+```
+
+---
+
+## Redux Thunks
+
+![alt text](./public/Section-03/image-23.png)
+
+---
+
+## Thunk useage
+
+After you improt thunk you can use api calls like this
+
+```jsx
+// Action creators
+export const deposit = (amount, currency) => {
+  if (currency === "USD")
+    return {
+      type: "account/deposit",
+      payload: amount,
+    };
+
+  return async (dispatch, getState) => {
+    dispatch({ type: "account/convertingCurrency" });
+    // Api call
+    // retrun action
+    const res = await fetch(
+      `https://api.frankfurter.app/latest?amount=${amount}&from=${currency}&to=USD`
+    );
+    const data = await res.json();
+    const converted = data.rates.USD;
+    // console.log(converted);
+    dispatch({
+      type: "account/deposit",
+      payload: converted,
+    });
+  };
+};
+```
+
+---
+
+## Installing redux dev tools
+
+```sh
+$ npm i redux-devtools-extension
+```
+
+How to use this -
+
+```javascript
+import { applyMiddleware, combineReducers, createStore } from "redux";
+import { thunk } from "redux-thunk";
+import { composeWithDevTools } from "redux-devtools-extension";
+import accountReducer from "./features/accounts/accountSlice";
+import customerReducer from "./features/customers/customerSlice";
+
+// Create Redux store
+const rootReducer = combineReducers({
+  account: accountReducer,
+  customer: customerReducer,
+});
+
+const store = createStore(
+  rootReducer,
+  composeWithDevTools(applyMiddleware(thunk))
+);
+
+export default store;
+
+// console.log(store.getState());
+```
+
+---
+
+## Redux Toolkit
+
+### Introduction
+
+Redux Toolkit is the official, recommended approach for writing Redux logic. It provides a set of tools that simplify Redux development by reducing boilerplate code and offering good defaults for store setup and state management.
+
+### Redux Toolkit Store Setup
+
+#### Overview
+
+This setup defines the Redux store using Redux Toolkit's `configureStore` method. It combines multiple slices (reducers) into a single store, allowing for centralized state management in a React application.
+
+#### Installation
+
+Ensure you have Redux Toolkit installed:
+
+```sh
+npm install @reduxjs/toolkit
+```
+
+#### Store Configuration
+
+```javascript
+import { configureStore } from "@reduxjs/toolkit";
+import accountReducer from "./features/accounts/accountSlice";
+import customerReducer from "./features/customers/customerSlice";
+
+const store = configureStore({
+  reducer: {
+    account: accountReducer,
+    customer: customerReducer,
+  },
+});
+
+export default store;
+
+// console.log(store.getState());
+```
+
+#### Explanation
+
+1. **`configureStore`**: A function from Redux Toolkit that simplifies store creation by automatically setting up the Redux DevTools extension and middleware.
+2. **Reducers**:
+   - `accountReducer` manages the state related to user accounts (e.g., balance, transactions).
+   - `customerReducer` handles customer-related state (e.g., customer details).
+3. **Store Export**: The store is exported to be used in the application, typically in the main `index.js` or `App.js` file.
+4. **`console.log(store.getState())`**: This can be used for debugging to check the initial state of the store.
+
+#### Example: Account Slice
+
+This example defines a Redux slice for managing account-related state.
+
+```jsx
+import { createSlice } from "@reduxjs/toolkit";
+
+const initialState = {
+  balance: 0,
+  loan: 0,
+  loanPurpose: "",
+  isLoading: false,
+};
+
+const accountSlice = createSlice({
+  name: "account",
+  initialState,
+  reducers: {
+    deposit(state, action) {
+      state.balance += action.payload;
+      state.isLoading = false;
+    },
+    withdraw(state, action) {
+      state.balance -= action.payload;
+    },
+
+    // If you need to pass two parameters when dispatching an action,
+    // you must handle it carefully because Redux Toolkit's default actions
+    // only accept a single value as action.payload.
+    // To work around this, you can use the `prepare` function,
+    // which allows you to structure the payload properly.
+    // Alternatively, you can pass an object containing both values in the payload,
+    // which will also work with standard actions.
+
+    requestLoan: {
+      prepare(amount, purpose) {
+        return {
+          payload: { amount, purpose },
+        };
+      },
+      reducer(state, action) {
+        if (state.loan > 0) return;
+        state.balance += action.payload.amount;
+        state.loan = action.payload.amount;
+        state.loanPurpose = action.payload.purpose;
+      },
+    },
+    payLoan(state) {
+      if (state.balance < state.loan) return;
+      state.balance -= state.loan;
+      state.loan = 0;
+      state.loanPurpose = "";
+    },
+    convertingCurrency(state) {
+      state.isLoading = true;
+    },
+  },
+});
+
+export const { withdraw, requestLoan, payLoan } = accountSlice.actions;
+
+export const deposit = (amount, currency) => {
+  if (currency === "USD")
+    return {
+      type: "account/deposit",
+      payload: amount,
+    };
+
+  return async (dispatch, getState) => {
+    dispatch({ type: "account/convertingCurrency" });
+    const res = await fetch(
+      `https://api.frankfurter.app/latest?amount=${amount}&from=${currency}&to=USD`
+    );
+    const data = await res.json();
+    const converted = data.rates.USD;
+    dispatch({
+      type: "account/deposit",
+      payload: converted,
+    });
+  };
+};
+
+export default accountSlice.reducer;
+```
+
+#### Example: Customer Slice
+
+This example defines a Redux slice for managing customer-related state.
+
+```jsx
+import { createSlice } from "@reduxjs/toolkit";
+
+const initialState = {
+  fullName: "",
+  nid: "",
+  createdAt: "",
+};
+
+const customerSlice = createSlice({
+  name: "customer",
+  initialState,
+  reducers: {
+    createCustomer(state, action) {
+      state.fullName = action.payload["fullName"];
+      state.nid = action.payload["nationalId"];
+      state.createdAt = new Date().toDateString();
+    },
+    updateName(state, action) {
+      state.fullName = action.payload;
+    },
+  },
+});
+
+export const { createCustomer, updateName } = customerSlice.actions;
+
+export default customerSlice.reducer;
+```
+
+#### How to use them in componets
+
+```jsx
+import { useDispatch, useSelector } from "react-redux";
+import { deposit, withdraw } from "../features/accounts/accountSlice";
+import { createCustomer } from "../features/customers/customerSlice";
+
+// Using Redux State in Components
+// useSelector is used to access the Redux state
+const balance = useSelector((state) => state.account.balance);
+const fullName = useSelector((state) => state.customer.fullName);
+
+// Dispatching Actions in Components
+// useDispatch is used to send actions to the Redux store
+const dispatch = useDispatch();
+dispatch(deposit(100)); // Depositing money
+dispatch(withdraw(50)); // Withdrawing money
+dispatch(createCustomer({ fullName: "John Doe", nationalId: "123456789" })); // Creating a customer
+
+// Explanation:
+// 1. useSelector is used to retrieve specific pieces of state from the Redux store.
+// 2. useDispatch is used to dispatch actions that modify the state.
+// 3. Actions like deposit, withdraw, and createCustomer modify the respective slices of the state.
+```
+
+### Conclusion
+
+Redux Toolkit simplifies state management in React applications by reducing boilerplate and providing a structured way to handle actions and reducers. This guide covers basic store setup and examples for managing accounts and customers using Redux Toolkit.
 
 ---
