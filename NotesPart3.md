@@ -2,6 +2,144 @@
 
 ---
 
+# Table of Contents
+
+## Table of Contents
+
+1. [`useReducer` Hook](#usereducer-hook)
+
+   - [Example: Managing Quiz State with useReducer](#example-managing-quiz-state-with-usereducer)
+   - [How to Use](#how-to-use)
+
+2. [Setting Up ESLint in a Vite Project](#setting-up-eslint-in-a-vite-project)
+
+   - [Installation](#installation)
+   - [Configuration](#configuration)
+   - [How to Use](#how-to-use-1)
+
+3. [Installing React Router](#installing-react-router)
+
+   - [Installation](#installation-1)
+   - [How to Use](#how-to-use-2)
+
+4. [React Router Setup](#react-router-setup)
+
+   - [Example: Basic Routing](#example-basic-routing)
+   - [How to Use](#how-to-use-3)
+
+5. [Nested Routes in React Router](#nested-routes-in-react-router)
+
+   - [Example: Defining Nested Routes](#example-defining-nested-routes)
+   - [How to Use](#how-to-use-4)
+
+6. [Using URL Parameters and Query Strings in React Router](#using-url-parameters-and-query-strings-in-react-router)
+
+   - [Setting Up Dynamic Routes with useParams](#setting-up-dynamic-routes-with-useparams)
+   - [Adding Query Strings to Links](#adding-query-strings-to-links)
+   - [Accessing Query Parameters with useSearchParams](#accessing-query-parameters-with-usesearchparams)
+   - [Modifying Query Parameters Globally](#modifying-query-parameters-globally)
+
+7. [Using the `useNavigate` Hook](#using-the-usenavigate-hook)
+
+   - [Navigating to a Different Route](#navigating-to-a-different-route)
+   - [Navigating Backward](#navigating-backward)
+
+8. [Using `Navigate` for Redirection](#using-navigate-for-redirection)
+
+   - [Example: Implementing Navigation with React Router](#example-implementing-navigation-with-react-router)
+
+9. [Context API](#context-api)
+
+   - [Setting Up Context API](#setting-up-context-api)
+   - [Consuming Context Values](#consuming-context-values)
+
+10. [Custom Context Hook Boilerplate](#custom-context-hook-boilerplate)
+
+    - [Creating the Context and Provider](#creating-the-context-and-provider)
+    - [Another Context API Boilerplate](#another-context-api-boilerplate)
+    - [Creating a Custom Hook](#creating-a-custom-hook)
+
+11. [State Placement Options](#state-placement-options)
+
+    - [Understanding Different State Management Approaches](#understanding-different-state-management-approaches)
+
+12. [State Management Tool Options](#state-management-tool-options)
+
+    - [Choosing the Right State Management Tool](#choosing-the-right-state-management-tool)
+
+13. [Using Leaflet.js](#using-leafletjs)
+
+    - [Boilerplate Code](#boilerplate-code)
+
+14. [Other Ways to Use `useEffect`](#other-ways-to-use-useeffect)
+
+    - [Redirecting Based on Conditions](#redirecting-based-on-conditions)
+
+15. [Common Practice for Protecting Routes](#common-practice-for-protecting-routes)
+
+    - [Creating a Protected Route Component](#creating-a-protected-route-component)
+    - [Setting Up Protected Routes](#setting-up-protected-routes)
+
+16. [Performance Optimization Tools](#performance-optimization-tools)
+
+17. [Components Re-render Cases](#components-re-render-cases)
+
+18. [Memoization](#memoization)
+
+19. [Using Memo](#using-memo)
+
+    - [Optimizing Component Rendering with `memo`](#optimizing-component-rendering-with-memo)
+    - [Issues Using `memo`](#issues-using-memo)
+    - [Solution to `memo` Issues](#solution-to-memo-issues)
+    - [Three Key Use Cases for `useMemo` and `useCallback`](#three-key-use-cases-for-usememo-and-usecallback)
+    - [Using `useMemo` Hook](#using-usememo-hook)
+    - [Optimized Component with `useMemo`](#optimized-component-with-usememo)
+
+20. [`useCallback` Hook](#usecallback-hook)
+
+21. [Lazy loading](#lazy-loading)
+
+    - [Optimizing bundle size by code splitting](#optimizing-bundle-size-by-code-splitting)
+    - [Lazy loader pages](#lazy-loader-pages)
+
+22. [Optimization DOs and DON'Ts](#optimization-dos-and-donts)
+
+23. [`useEffect` Dependency Array Rules](#useeffect-dependency-array-rules)
+
+    - [How to Handle Unnecessary Dependencies](#how-to-handle-unnecessary-dependencies)
+
+24. [Redux](#redux)
+
+    - [Mechanism of Redux](#mechanism-of-redux)
+    - [First Look at Redux Code Example](#first-look-at-redux-code-example)
+    - [When You Have More Than One Reducer](#when-you-have-more-than-one-reducer)
+
+25. [How to use the store in components](#how-to-use-the-store-in-components)
+
+    - [Accessing store values](#accessing-store-values)
+    - [Accessing dispatch functions](#accessing-dispatch-functions)
+
+26. [Redux Thunks](#redux-thunks)
+
+27. [Thunk usage](#thunk-usage)
+
+28. [Installing Redux Dev Tools](#installing-redux-dev-tools)
+
+29. [Redux Toolkit](#redux-toolkit)
+
+    - [Introduction](#introduction)
+    - [Redux Toolkit Store Setup](#redux-toolkit-store-setup)
+      - [Overview](#overview)
+      - [Installation](#installation)
+      - [Store Configuration](#store-configuration)
+    - [Example: Account Slice](#example-account-slice)
+    - [Example: Customer Slice](#example-customer-slice)
+    - [How to use them in components](#how-to-use-them-in-components)
+
+30. [Context API vs Redux](#context-api-vs-redux)
+
+---
+
 ## useReducer Hook
 
 The `useReducer` hook is useful for managing complex state logic in React applications. It helps organize state updates into a predictable flow using actions and a reducer function. Unlike `useState`, which is ideal for simple state management, `useReducer` is better suited for handling multiple related state transitions.
