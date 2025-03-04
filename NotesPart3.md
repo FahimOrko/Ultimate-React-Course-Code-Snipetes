@@ -2,8 +2,6 @@
 
 ---
 
-# Table of Contents
-
 ## Table of Contents
 
 1. [`useReducer` Hook](#usereducer-hook)
