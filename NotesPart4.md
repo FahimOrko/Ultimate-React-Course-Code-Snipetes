@@ -26,6 +26,7 @@
    - [Where It Can Be Used](#where-it-can-be-used)
 
 6. [Setting Up Action in React Router](#setting-up-action-in-react-router)
+
    - [Example Route Setup](#example-route-setup)
    - [Creating the Action Function](#creating-the-action-function)
    - [Form Component for Submitting Data](#form-component-for-submitting-data)
@@ -33,15 +34,21 @@
    - [Using the Data Inside the Action Function](#using-the-data-inside-the-action-function)
    - [`useActionData` Hook](#useactiondata-hook)
 
-## 7. Tailwind CSS
+7. Tailwind CSS
 
-- [Divide Property](#divide-property)
-- [Margin Auto (`m-auto`)](#margin-auto-m-auto)
-- [GrayScale](#grayscale)
+   - [Divide Property](#divide-property)
+   - [Margin Auto (`m-auto`)](#margin-auto-m-auto)
+   - [GrayScale](#grayscale)
 
-## 8. Redux Store
+8. [Redux Store](#redux-store)
 
-- [Selector Function](#selector-function)
+   - [Selector Function](#selector-function)
+   - [Redux Toolkit Thunks](#redux-toolkit-thunks)
+
+9. [Use Fetcher Hook `useFetcher()`](#use-fetcher-hook-usefetcher)
+
+   - [Fetching Data with `useFetcher`](#fetching-data-with-usefetcher)
+   - [Updating Data with `useFetcher.Form`](#updating-data-with-usefetcherform)
 
 ---
 
@@ -452,5 +459,146 @@ export const getTotalPrice = (state) => {
   return state.cart.cart.reduce((sum, item) => sum + item.totalPrice, 0);
 };
 
+export const getCurrentQuantityById = (id) => (state) => {
+  return state.cart.cart.find((item) => item.pizzaId === id)?.quantity ?? 0;
+};
+
 export default cartSlice.reducer;
+```
+
+### Redux toolkit thunks
+
+expample :
+
+```jsx
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { getAddress } from "../../services/apiGeocoding";
+
+// Function to get the user's geolocation
+function getPosition() {
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(resolve, reject);
+  });
+}
+
+// Async thunk to fetch user's address based on geolocation
+export const fetchAddress = createAsyncThunk("user/fetchAddress", async () => {
+  try {
+    // 1) Get user's geolocation position using the browser's geolocation API
+    const positionObj = await getPosition();
+    const position = {
+      latitude: positionObj.coords.latitude,
+      longitude: positionObj.coords.longitude,
+    };
+
+    // 2) Use reverse geocoding API to retrieve address details from latitude and longitude
+    const addressObj = await getAddress(position);
+    const address = `${addressObj.locality}, ${addressObj.city} ${addressObj.postcode}, ${addressObj.countryName}`;
+
+    // 3) Return an object containing the extracted position and address
+    return { position, address };
+  } catch (error) {
+    throw new Error("Failed to fetch address");
+  }
+});
+
+// Initial state for the Redux store
+const initialState = {
+  userName: "", // Stores the user's name
+  status: "idle", // Represents the status of the async operation
+  position: {}, // Stores the user's geolocation data
+  address: "", // Stores the user's address retrieved from geolocation
+  error: "", // Stores any error messages
+};
+
+// Create a Redux slice for managing user-related state
+const userSlice = createSlice({
+  name: "user",
+  initialState,
+  reducers: {
+    // Reducer to update the user's name in the state
+    updateName(state, action) {
+      state.userName = action.payload;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      // Handle the pending state when fetchAddress is called
+      .addCase(fetchAddress.pending, (state) => {
+        state.status = "loading";
+      })
+      // Handle the fulfilled state when fetchAddress completes successfully
+      .addCase(fetchAddress.fulfilled, (state, action) => {
+        state.position = action.payload.position;
+        state.address = action.payload.address;
+        state.status = "idle";
+      })
+      // Handle the rejected state when fetchAddress fails
+      .addCase(fetchAddress.rejected, (state, action) => {
+        state.error = action.error.message;
+        state.status = "error";
+      });
+  },
+});
+
+// Export actions to be used in components
+export const { updateName } = userSlice.actions;
+
+// Selector function to get the user's name from the state
+export const getUserName = (state) => state.user.userName;
+
+// Export reducer to be used in the Redux store
+export default userSlice.reducer;
+```
+
+## 9. Use Fetcher hook `useFetcher()`
+
+### Fetching Data with `useFetcher`
+
+In some cases, we need to fetch data for a page that has already been loaded, without navigating to a new page.
+This is where the `useFetcher` hook comes in handy—it allows us to load data from a different route without triggering navigation.
+
+Example:
+
+```jsx
+const fetcher = useFetcher();
+
+useEffect(() => {
+  if (!fetcher.data && fetcher.state === "idle") {
+    fetcher.load("/menu");
+  }
+}, [fetcher]);
+
+console.log(fetcher.data);
+```
+
+### Updating Data with `useFetcher.From`
+
+The `useFetcher` hook can also be used to update data, similar to how Redux handles state updates.
+Instead of navigating away from the current page, `fetcher.Form` submits data in place, ensuring a smooth user experience.
+This approach allows you to update data seamlessly without leaving the current page.
+
+Example:
+
+```jsx
+import { useFetcher } from "react-router-dom";
+import OrderButton from "../../ui/Buttons/OrderButton";
+import { updateOrder } from "../../services/apiRestaurant";
+
+const UpdateOrder = ({ order }) => {
+  const fetcher = useFetcher();
+  return (
+    <fetcher.Form method="PATCH" className="text-right">
+      <OrderButton type="primary">Make priority</OrderButton>
+    </fetcher.Form>
+  );
+};
+
+export const action = async ({ request, params }) => {
+  const data = { priority: true };
+  await updateOrder(params.orderId, data);
+  return null;
+};
+
+export default UpdateOrder;
 ```
